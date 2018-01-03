@@ -1,12 +1,15 @@
 package edu.castle.actor.monster;
 
 import edu.castle.actor.Actor;
+import java.awt.Color;
+import java.awt.Graphics;
 
 public class Monster extends Actor {
 
-    private int score;
-    private int life;
-    private boolean dead;
+    private int score;	    // размер бонуса, выпадающего в виде монеты
+    private int life;	    // количество жизней
+    private boolean dead;   // признак, что жизни закончились
+    private int showHealth; // количество тиков, в течении которых отрисовывается индикатор здоровья
 
     public Monster(int x, int y, String sSprite, int cols, int rows) {
 	super(x, y, sSprite, cols, rows);
@@ -32,6 +35,7 @@ public class Monster extends Actor {
 
     public void takeLife() {
 	if (life > 1) {
+	    showHealth = 10;
 	    life--;
 	} else {
 	    life = 0;
@@ -45,6 +49,19 @@ public class Monster extends Actor {
 
     public void setDead(boolean dead) {
 	this.dead = dead;
+    }
+    
+    // переопределяем, чтобы отрисовать индикатор здоровья
+    @Override
+    public void draw(Graphics g) {
+	super.draw(g);
+	if (showHealth > 0) {
+	    g.setColor(Color.red);
+	    for (int i = 0; i < getLife(); i++) {
+		g.fillRect(x+i*3+i*2, y, 3, 3);
+	    }
+	    showHealth--;
+	}
     }
 
 }
