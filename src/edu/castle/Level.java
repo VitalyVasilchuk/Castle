@@ -1,16 +1,22 @@
 package edu.castle;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.logging.Logger;
+
 public class Level {
 
     private int number;	    // номер уровня
     private String sLevel;  // строка, описывающая уровень
     private int cols;	    // макс количество ячеек по горизонтали (колонки)
     private int rows;	    // макс количество ячеек по вертикали (строки)
-    
+
     private final String[] levels = {
 	"",
-	
-	  "####################" + "\n"
+	"####################" + "\n"
 	+ "# M  $ #          G#" + "\n"
 	+ "###H###########H####" + "\n"
 	+ "# GH     M     H   #" + "\n"
@@ -47,14 +53,15 @@ public class Level {
 
     public Level(int number) {
 	this.number = number;
-	sLevel = levels[number];
-	
-        int i = sLevel.indexOf('\n');
+	//sLevel = levels[number];
+	sLevel = ReadLevelFile("level.txt");
+
+	int i = sLevel.indexOf('\n');
 	cols = i;
-        while (i >= 0) {
-            rows++;
-            i = sLevel.indexOf('\n', i + 1);
-        }
+	while (i >= 0) {
+	    rows++;
+	    i = sLevel.indexOf('\n', i + 1);
+	}
 	rows++;
     }
 
@@ -77,7 +84,7 @@ public class Level {
 	    }
 
 	}
-	
+
 	return aLevel;
     }
 
@@ -89,9 +96,25 @@ public class Level {
 	return rows;
     }
 
+    private String ReadLevelFile(String fileName) {
+	String sLevel = "";
+	List<String> lines;
+	try {
+	    lines = Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
+	    for (String line : lines) {
+		sLevel += line + "\n";
+	    }
+	    sLevel = sLevel.substring(0, sLevel.length() - 1);
+	} catch (IOException ex) {
+	    sLevel = levels[number];
+	    Logger.getLogger(Level.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	}
+	return sLevel;
+    }
+
     @Override
     public String toString() {
-	return "Level{" + "number=" + number +  ", cols=" + cols + ", rows=" + rows + ", sLevel=\n" + sLevel + '}';
+	return "Level{" + "number=" + number + ", cols=" + cols + ", rows=" + rows + ", sLevel=\n" + sLevel + '}';
     }
 
 }
